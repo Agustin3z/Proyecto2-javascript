@@ -1,0 +1,230 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.filtros-container {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filtros-container select, 
+.filtros-container input {
+    padding: 0.5rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.filtros-container button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.filtros-container button:hover {
+    background-color: #2980b9;
+}
+
+.habitaciones-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.habitacion-card {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.habitacion-card:hover {
+    transform: translateY(-5px);
+}
+
+.habitacion-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.habitacion-info {
+    padding: 1.5rem;
+}
+
+.habitacion-info h3 {
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.habitacion-info p {
+    margin-bottom: 1rem;
+    color: #7f8c8d;
+}
+
+.habitacion-precio {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.btn-reservar {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.btn-reservar:hover {
+    background-color: #219653;
+}
+
+.reservas-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #3498db;
+    color: white;
+    padding: 1rem;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.reservas-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+    transition: right 0.3s ease-in-out;
+    padding: 1.5rem;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.reservas-panel.active {
+    right: 0;
+}
+
+.reservas-panel h2 {
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 0.5rem;
+}
+
+.reservas-items {
+    margin-bottom: 1.5rem;
+}
+
+.reserva-item {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #3498db;
+}
+
+.reserva-item h4 {
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.reserva-item p {
+    margin-bottom: 0.3rem;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.reserva-item .reserva-precio {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+#total-reserva {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ecf0f1;
+}
+
+#cancelar-reserva,
+#confirmar-reservas {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#cancelar-reserva {
+    background-color: #e74c3c;
+    color: white;
+}
+
+#cancelar-reserva:hover {
+    background-color: #c0392b;
+}
+
+#confirmar-reservas {
+    background-color: #27ae60;
+    color: white;
+}
+
+#confirmar-reservas:hover {
+    background-color: #219653;
+}
+
+.selected {
+    background-color: #fffde7;
+    border-left: 4px solid #f39c12;
+}
