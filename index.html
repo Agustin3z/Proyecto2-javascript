@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Paradise - Reservas</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Hotel Paradise</h1>
+        <p>Reserva tu estadía perfecta</p>
+    </header>
+    
+    <main>
+        <section id="filtros">
+            <h2>Filtrar habitaciones</h2>
+            <div class="filtros-container">
+                <select id="tipo-habitacion">
+                    <option value="">Todos los tipos</option>
+                    <option value="individual">Individual</option>
+                    <option value="doble">Doble</option>
+                    <option value="suite">Suite</option>
+                </select>
+                <input type="number" id="precio-max" placeholder="Precio máximo">
+                <button id="aplicar-filtros">Aplicar filtros</button>
+            </div>
+        </section>
+
+        <section id="habitaciones">
+            <h2>Nuestras habitaciones</h2>
+            <div id="contenedor-habitaciones" class="habitaciones-container"></div>
+        </section>
+    </main>
+
+    <button id="reservas-btn" class="reservas-btn"> Ver reservas</button>
+
+    <aside id="reservas-panel" class="reservas-panel">
+        <h2> Tus reservas</h2>
+        <div id="reservas-items" class="reservas-items"></div>
+        <div id="total-reserva"></div>
+        <button id="cancelar-reserva">Cancelar reserva seleccionada</button>
+        <button id="confirmar-reservas">Confirmar todas las reservas</button>
+    </aside>
+
+    <script src="./js/hotel.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>
