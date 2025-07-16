@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "tipo": "individual",
+        "descripcion": "Habitación acogedora con cama individual y escritorio",
+        "precio": 4500,
+        "imagen": "img/habitacion-individual.jpg",
+        "disponibilidad": true
+    },
+
+    
+    {
+        "id": 2,
+        "tipo": "individual",
+        "descripcion": "Habitación luminosa con vista al jardín",
+        "precio": 5000,
+        "imagen": "img/habitacion-individual-2.jpg",
+        "disponibilidad": true
+    },
+    {
+        "id": 3,
+        "tipo": "doble",
+        "descripcion": "Amplia habitación con cama queen size",
+        "precio": 7500,
+        "imagen": "img/habitacion-doble.jpg",
+        "disponibilidad": true
+    },
+    {
+        "id": 4,
+        "tipo": "doble",
+        "descripcion": "Habitación doble con dos camas twin",
+        "precio": 7000,
+        "imagen": "img/habitacion-doble-2.jpg",
+        "disponibilidad": true
+    },
+    {
+        "id": 5,
+        "tipo": "suite",
+        "descripcion": "Suite con jacuzzi y sala de estar",
+        "precio": 12000,
+        "imagen": "img/suite.jpg",
+        "disponibilidad": true
+    },
+    {
+        "id": 6,
+        "tipo": "suite",
+        "descripcion": "Suite presidencial con terraza privada",
+        "precio": 18000,
+        "imagen": "img/suite-presidencial.jpg",
+        "disponibilidad": true
+    }
+]

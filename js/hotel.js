@@ -1,40 +1,60 @@
 class Habitacion {
-    constructor(id, tipo, descripcion, precio, imagen, disponibilidad = true) {
+    constructor({ id, tipo, descripcion, precio, imagen, disponibilidad, amenities = [] }) {
         this.id = id;
         this.tipo = tipo;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.imagen = imagen;
+        this.imagen = imagen.startsWith('img/') ? imagen : `img/${imagen}`;
         this.disponibilidad = disponibilidad;
+        this.amenities = amenities;
+    }
+
+    get tipoFormateado() {
+        return this.tipo.charAt(0).toUpperCase() + this.tipo.slice(1);
     }
 }
 
 class Reserva {
-    constructor(habitacion, fechaInicio, fechaFin, huesped) {
+    constructor({ habitacion, fechaInicio, fechaFin, huesped }) {
+        if (!habitacion || !fechaInicio || !fechaFin || !huesped?.nombre) {
+            throw new Error('Datos incompletos para crear reserva');
+        }
+
         this.habitacion = habitacion;
         this.fechaInicio = new Date(fechaInicio);
         this.fechaFin = new Date(fechaFin);
         this.huesped = huesped;
-        this.id = Date.now().toString();
-        this.estado = 'pendiente'; // pendiente, confirmada, cancelada
-        this.calcularTotal();
+        this.id = `RES-${Date.now()}`;
+        this.estado = 'pendiente';
+        this.fechaCreacion = new Date();
+        this.total = this.calcularTotal();
     }
 
     calcularTotal() {
+        if (this.fechaFin <= this.fechaInicio) {
+            throw new Error('Fecha de salida debe ser posterior a la de entrada');
+        }
+
         const diffTime = Math.abs(this.fechaFin - this.fechaInicio);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        this.total = diffDays * this.habitacion.precio;
-        return this.total;
+        return diffDays * this.habitacion.precio;
     }
 
-    confirmar() {
-        this.estado = 'confirmada';
-        this.habitacion.disponibilidad = false;
-    }
-
-    cancelar() {
-        this.estado = 'cancelada';
-        this.habitacion.disponibilidad = true;
+    toJSON() {
+        return {
+            id: this.id,
+            habitacion: {
+                id: this.habitacion.id,
+                tipo: this.habitacion.tipo,
+                precio: this.habitacion.precio
+            },
+            fechaInicio: this.fechaInicio.toISOString(),
+            fechaFin: this.fechaFin.toISOString(),
+            huesped: this.huesped,
+            estado: this.estado,
+            total: this.total,
+            fechaCreacion: this.fechaCreacion.toISOString()
+        };
     }
 }
 
@@ -42,110 +62,118 @@ class SistemaReservas {
     constructor() {
         this.habitaciones = [];
         this.reservas = [];
-        this.cargarHabitaciones();
-        this.cargarReservas();
     }
 
-    cargarHabitaciones() {
-        // Datos de ejemplo - en un sistema real podrían venir de una API
-        this.habitaciones = [
-            new Habitacion(
-                1, 
-                'individual', 
-                'Habitación individual, baño privado', 
-                4500, 
-                'imagenes/habitacion-individual.jpg'
-            ),
-            new Habitacion(
-                2, 
-                'individual', 
-                'Habitación individual con balcon', 
-                5000, 
-                'imagenes/habitacion-individual-2.jpg'
-            ),
-            new Habitacion(
-                3, 
-                'doble', 
-                'Habitación doble con cama queen, baño privado y balcón', 
-                7500, 
-                'imagenes/habitacion-doble.jpg'
-            ),
-            new Habitacion(
-                4, 
-                'doble', 
-                'Habitación doble con dos camas twin, ideal para amigos', 
-                7000, 
-                'imagenes/habitacion-doble-2.jpg'
-            ),
-            new Habitacion(
-                5, 
-                'suite', 
-                'Suite ejecutiva con sala de estar separada y jacuzzi', 
-                12000, 
-                'imagenes/suite.jpg'
-            ),
-            new Habitacion(
-                6, 
-                'suite', 
-                'Suite presidencial con terraza privada y vista al mar', 
-                18000, 
-                'imagenes/suite-presidencial.jpg'
-            )
-        ];
+    async inicializar() {
+        try {
+            await this.cargarHabitaciones();
+            this.cargarReservas();
+            return true;
+        } catch (error) {
+            console.error('Error inicializando SistemaReservas:', error);
+            return false;
+        }
+    }
+
+    async cargarHabitaciones() {
+        this.habitaciones = (await HotelAPI.fetchHabitaciones())
+            .map(item => new Habitacion(item));
     }
 
     cargarReservas() {
         const reservasGuardadas = JSON.parse(localStorage.getItem('reservasHotel')) || [];
-        this.reservas = reservasGuardadas.map(reserva => {
-            const habitacion = this.habitaciones.find(h => h.id === reserva.habitacion.id);
-            const nuevaReserva = new Reserva(
-                habitacion, 
-                reserva.fechaInicio, 
-                reserva.fechaFin, 
-                reserva.huesped
-            );
-            nuevaReserva.id = reserva.id;
-            nuevaReserva.estado = reserva.estado;
-            return nuevaReserva;
-        });
+        this.reservas = reservasGuardadas.map(reservaData => {
+            const habitacion = this.habitaciones.find(h => h.id === reservaData.habitacion.id);
+            if (!habitacion) return null;
+            
+            try {
+                return new Reserva({
+                    habitacion,
+                    fechaInicio: reservaData.fechaInicio,
+                    fechaFin: reservaData.fechaFin,
+                    huesped: reservaData.huesped
+                });
+            } catch (error) {
+                console.error('Error cargando reserva:', error);
+                return null;
+            }
+        }).filter(Boolean);
     }
 
     guardarReservas() {
-        localStorage.setItem('reservasHotel', JSON.stringify(this.reservas));
+        localStorage.setItem('reservasHotel', JSON.stringify(
+            this.reservas.map(r => r.toJSON())
+        ));
     }
 
-    agregarReserva(habitacion, fechaInicio, fechaFin, huesped) {
-        const nuevaReserva = new Reserva(habitacion, fechaInicio, fechaFin, huesped);
-        this.reservas.push(nuevaReserva);
-        this.guardarReservas();
-        return nuevaReserva;
+    agregarReserva(reservaData) {
+        try {
+            const habitacion = this.habitaciones.find(h => 
+                h.id === reservaData.habitacionId && h.disponibilidad
+            );
+            
+            if (!habitacion) {
+                throw new Error('Habitación no disponible');
+            }
+
+            const reserva = new Reserva({
+                habitacion,
+                fechaInicio: reservaData.fechaInicio,
+                fechaFin: reservaData.fechaFin,
+                huesped: reservaData.huesped
+            });
+
+            this.reservas.push(reserva);
+            this.guardarReservas();
+            return reserva;
+        } catch (error) {
+            console.error('Error agregando reserva:', error);
+            throw error;
+        }
     }
 
-    cancelarReserva(id) {
-        const reserva = this.reservas.find(r => r.id === id);
-        if (reserva) {
-            reserva.cancelar();
-            this.reservas = this.reservas.filter(r => r.id !== id);
+    async cancelarReserva(id) {
+        try {
+            const index = this.reservas.findIndex(r => r.id === id);
+            if (index === -1) return false;
+
+            await HotelAPI.cancelarReserva(id);
+            this.reservas.splice(index, 1);
             this.guardarReservas();
             return true;
+        } catch (error) {
+            console.error('Error cancelando reserva:', error);
+            throw error;
         }
-        return false;
     }
 
-    confirmarReservas() {
-        this.reservas.forEach(reserva => reserva.confirmar());
-        this.guardarReservas();
+    async confirmarTodasLasReservas() {
+        try {
+            const resultados = await Promise.all(
+                this.reservas.map(async reserva => {
+                    const resultado = await HotelAPI.confirmarReserva(reserva);
+                    reserva.estado = 'confirmada';
+                    return resultado;
+                })
+            );
+            
+            this.guardarReservas();
+            return resultados;
+        } catch (error) {
+            console.error('Error confirmando reservas:', error);
+            throw error;
+        }
     }
 
-    calcularTotalReservas() {
-        return this.reservas.reduce((total, reserva) => total + reserva.total, 0);
-    }
-
-    filtrarHabitaciones(tipo, precioMax) {
+    filtrarHabitaciones({ tipo, precioMax }) {
         return this.habitaciones.filter(habitacion => {
             const cumpleTipo = !tipo || habitacion.tipo === tipo;
             const cumplePrecio = !precioMax || habitacion.precio <= precioMax;
             return cumpleTipo && cumplePrecio && habitacion.disponibilidad;
         });
+    }
+
+    calcularTotalReservas() {
+        return this.reservas.reduce((sum, r) => sum + r.total, 0);
     }
 }

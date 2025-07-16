@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel Paradise - Reservas</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h1>Hotel Paradise</h1>
+        <h1>🏨 Hotel Paradise 🏨</h1>
         <p>Reserva tu estadía perfecta</p>
     </header>
     
@@ -33,17 +34,30 @@
         </section>
     </main>
 
-    <button id="reservas-btn" class="reservas-btn"> Ver reservas</button>
+    <button id="reservas-btn" class="reservas-btn">📋 Ver reservas</button>
 
     <aside id="reservas-panel" class="reservas-panel">
-        <h2> Tus reservas</h2>
+        <h2>📋 Tus reservas</h2>
         <div id="reservas-items" class="reservas-items"></div>
-        <div id="total-reserva"></div>
+        <div id="total-reserva">Total: $0</div>
         <button id="cancelar-reserva">Cancelar reserva seleccionada</button>
         <button id="confirmar-reservas">Confirmar todas las reservas</button>
     </aside>
 
-    <script src="./js/hotel.js"></script>
-    <script src="./js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/api.js"></script>
+    <script src="js/hotel.js"></script>
+    <script src="js/main.js"></script>
+
+
+    <script>
+
+    // Verifica que los archivos JS se carguen
+    console.log("Archivos JS cargados:", 
+        typeof HotelAPI !== 'undefined', 
+        typeof SistemaReservas !== 'undefined'
+    );
+
+</script>
 </body>
 </html>
